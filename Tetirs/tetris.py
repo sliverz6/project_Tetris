@@ -6,10 +6,24 @@ from settings import Settings
 from game_screen import GameScreen
 from block import Block
 from block_data import blocks_blueprint
+from score_board import ScoreBoard
 
 
-# 메인 함수
+def pick_block(blocks):
+    """블록을 뽑아서 리스트에 순서대로 관리합니다."""
+    if not blocks:  # 처음 뽑는다면?
+        for _ in range(2):
+            blocks.append(random.choice(blocks_blueprint))  # 2개 뽑습니다.
+    else:
+        next_block = blocks[1]
+        blocks[0] = next_block
+        blocks[1] = random.choice(blocks_blueprint)
+
+    return blocks
+
+
 def main():
+    """메인 함수"""
     pygame.init()  # 설정 초기화
     settings = Settings()  # 설정 객체
 
@@ -19,11 +33,14 @@ def main():
     ))
     pygame.display.set_caption("Tetris")  # 윈도우 타이틀 생성
 
-    game_screen = GameScreen(settings, window)  # 게임 화면 객체
+    score_board = ScoreBoard(settings, window)  # 게임 점수판 객체
+    game_screen = GameScreen(settings, window, score_board)  # 게임 화면 객체
 
     # 블록 데이터에서 하나를 뽑아서 전달.
-    block_blueprint = random.choice(blocks_blueprint)
-    block = Block(game_screen, block_blueprint)  # 블록 생성
+    blocks = []
+    blocks = pick_block(blocks)
+    block = Block(game_screen, blocks[0])  # 블록 생성
+    score_board.set_next_block(blocks[1])  # 다음 블록
 
     drop_timer = 0
 
@@ -44,11 +61,18 @@ def main():
                     block.rotate()
 
         drop_timer += 1  # 블록 떨어트리기 시간
-        if drop_timer == 500:
-            block.drop()
-            drop_timer = 0
-        
+        if drop_timer == settings.block_drop_speed:
+            drop_end = block.drop()
+            if drop_end:  # 바닥에 닿였다면?
+                game_screen.clear_lines()  # 가득찬 줄이 있다면 지웁니다.
+                blocks = pick_block(blocks)  # 블록을 뽑습니다.
+                block = Block(game_screen, blocks[0])  # 블록 생성
+                score_board.set_next_block(blocks[1])  # 다음 블록
+            drop_timer = 0  # 낙하 타이머 초기화
+
+        window.fill("black")
         game_screen.update()  # 게임 화면 그리기
+        score_board.update()  # 게임 점수판 그리기
         pygame.display.update()  # 최근 화면 그리기
 
 

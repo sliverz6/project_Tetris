@@ -4,8 +4,8 @@ class Settings:
     def __init__(self):
         """초기화"""
         # 화면 설정
-        self.screen_width = 500
-        self.screen_height = 700
+        self.screen_width = 600
+        self.screen_height = 630
         self.screen_data = [
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
             [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -30,11 +30,35 @@ class Settings:
             [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         ]
 
+        # 다음 블록 스크린 데이터
+        self.next_block_screen_data = [
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+            [0, 0, 0, 0],
+        ]
+
         # 사각형 설정
         self.square_size = 30
         self.square_filled_size = self.square_size - 5
         self.square_colors = {
             0: "black",
             1: "white",
-            2: "red",
+            2: (236, 252, 3),  # O
+            3: (3, 252, 252),  # I
+            4: (255, 45, 3),  # s
+            5: (32, 214, 38),  # z
+            6: (245, 194, 10),  # L
+            7: (255, 71, 243),  # J
+            8: (144, 2, 209),  # T
+            9: (236, 252, 3),  # O -DONE
+            10: (3, 252, 252),  # I -DONE
+            11: (255, 45, 3),  # s -DONE
+            12: (32, 214, 38),  # z -DONE
+            13: (245, 194, 10),  # L -DONE
+            14: (255, 71, 243),  # J -DONE
+            15: (144, 2, 209)  # T -DONE
         }
+
+        # 낙하 속도
+        self.block_drop_speed = 100
